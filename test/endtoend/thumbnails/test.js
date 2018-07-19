@@ -10,6 +10,9 @@ const images = [
   path.join(__dirname, '../../resources/baboon.png'),
   path.join(__dirname, '../../resources/kodim23.png')
 ]
+const notImages = [
+  { type: 'text/javascript', file: __filename }
+]
 
 describe.only('ThumbnailGenerator', () => {
   beforeEach(() => {
@@ -23,6 +26,9 @@ describe.only('ThumbnailGenerator', () => {
       for (const img of images) {
         browser.chooseFile('#uppyThumbnails .uppy-FileInput-input', img)
       }
+      for (const { file } of notImages) {
+        browser.chooseFile('#uppyThumbnails .uppy-FileInput-input', file)
+      }
     } else {
       for (const img of images) {
         browser.execute(
@@ -31,6 +37,15 @@ describe.only('ThumbnailGenerator', () => {
           path.basename(img), // name
           `image/${path.extname(img).slice(1)}`, // type
           fs.readFileSync(img, 'base64') // b64
+        )
+      }
+      for (const { type, file } of images) {
+        browser.execute(
+          selectFakeFile,
+          'uppyThumbnails',
+          path.basename(file), // name
+          type, // type
+          fs.readFileSync(file, 'base64') // b64
         )
       }
     }

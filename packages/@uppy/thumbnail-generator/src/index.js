@@ -174,6 +174,7 @@ module.exports = class ThumbnailGenerator extends Plugin {
         .then(() => this.processQueue())
     } else {
       this.queueProcessing = false
+      this.uppy.log('[ThumbnailGenerator] Emptied thumbnail queue')
       this.uppy.emit('thumbnail:ready')
     }
   }
@@ -183,10 +184,12 @@ module.exports = class ThumbnailGenerator extends Plugin {
       return this.createThumbnail(file, this.opts.thumbnailWidth)
         .then(preview => {
           this.setPreviewURL(file.id, preview)
+          this.uppy.log(`[ThumbnailGenerator] Generated thumbnail for ${file.id}`)
           this.uppy.emit('thumbnail:generated', this.uppy.getFile(file.id), preview)
         })
         .catch(err => {
-          console.warn(err.stack || err.message)
+          this.uppy.log(`[ThumbnailGenerator] Failed thumbnail for ${file.id}`)
+          this.uppy.log(err, 'warning')
           this.uppy.emit('thumbnail:error', this.uppy.getFile(file.id), err)
         })
     }
