@@ -22,6 +22,12 @@ describe.only('ThumbnailGenerator', () => {
   it('should generate thumbnails for images', () => {
     $('#uppyThumbnails .uppy-FileInput-input').waitForExist()
 
+    browser.execute(() => {
+      window.thumbnailsReady = new Promise((resolve) => {
+        window.uppyThumbnails.on('thumbnail:ready', resolve)
+      })
+    })
+
     if (supportsChooseFile()) {
       for (const img of images) {
         browser.chooseFile('#uppyThumbnails .uppy-FileInput-input', img)
@@ -51,7 +57,7 @@ describe.only('ThumbnailGenerator', () => {
     }
 
     browser.executeAsync((cb) => {
-      window.uppyThumbnails.on('thumbnail:ready', () => cb())
+      window.thumbnailsReady.then(cb)
     })
 
     // const names = $$('p.file-name')
