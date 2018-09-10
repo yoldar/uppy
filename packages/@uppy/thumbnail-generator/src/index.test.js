@@ -9,6 +9,7 @@ function MockCore () {
   const files = {}
   core.mockFile = (id, f) => { files[id] = f }
   core.getFile = (id) => files[id]
+  core.log = () => null
   return core
 }
 
