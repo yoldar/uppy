@@ -35,20 +35,19 @@ module.exports = class ThumbnailGenerator extends Plugin {
    */
   createThumbnail (file, targetWidth) {
     const originalUrl = URL.createObjectURL(file.data)
-    const revoke = () => URL.revokeObjectURL(originalUrl)
     const onload = new Promise((resolve, reject) => {
       const image = new Image()
       image.src = originalUrl
       image.onload = () => {
+        URL.revokeObjectURL(originalUrl)
         resolve(image)
       }
       image.onerror = () => {
+        URL.revokeObjectURL(originalUrl)
         // The onerror event is totally useless unfortunately, as far as I know
         reject(new Error('Could not create thumbnail'))
       }
     })
-
-    onload.then(revoke, revoke)
 
     return onload
       .then(image => {
