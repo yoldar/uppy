@@ -8,7 +8,8 @@ const testURL = 'http://localhost:4567/thumbnails'
 const images = [
   path.join(__dirname, '../../resources/image.jpg'),
   path.join(__dirname, '../../resources/baboon.png'),
-  path.join(__dirname, '../../resources/kodim23.png')
+  path.join(__dirname, '../../resources/kodim23.png'),
+  path.join(__dirname, '../../resources/invalid.png')
 ]
 const notImages = [
   { type: 'text/javascript', file: __filename }
@@ -45,7 +46,7 @@ describe.only('ThumbnailGenerator', () => {
           fs.readFileSync(img, 'base64') // b64
         )
       }
-      for (const { type, file } of images) {
+      for (const { type, file } of notImages) {
         browser.execute(
           selectFakeFile,
           'uppyThumbnails',
@@ -75,7 +76,7 @@ describe.only('ThumbnailGenerator', () => {
     }
     */
 
-    expect(previews).to.have.lengthOf(3)
+    expect(previews).to.have.lengthOf(3) // ex. the invalid image
     for (const p of previews) {
       expect(p.getAttribute('src')).to.match(/^blob:/)
       expect(p.getElementSize('width')).to.equal(200)
