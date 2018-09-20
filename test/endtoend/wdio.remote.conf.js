@@ -2,10 +2,12 @@ const base = require('./wdio.base.conf')
 const { CompanionService } = require('./utils')
 
 function createCapability (capability) {
-  return Object.assign({
+  return {
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    build: process.env.TRAVIS_BUILD_NUMBER
-  }, capability)
+    build: process.env.TRAVIS_BUILD_NUMBER,
+    extendedDebugging: true,
+    ...capability
+  }
 }
 
 exports.config = Object.assign(base.config, {
